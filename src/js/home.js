@@ -1,11 +1,11 @@
-console.log('hola mundo!');
-const noCambia = "Leonidas";
+// console.log('hola mundo!');
+// const noCambia = "Leonidas";
 
-let cambia = "@LeonidasEsteban"
+// let cambia = "@LeonidasEsteban"
 
-function cambiarNombre(nuevoNombre) {
-  cambia = nuevoNombre
-}
+// function cambiarNombre(nuevoNombre) {
+//   cambia = nuevoNombre
+// }
 //Promesa en JS:
 //Se manda una funcion y se recibe 
 //un mensaje de si fallo o si se ejcuto correctamente.
@@ -14,20 +14,20 @@ function cambiarNombre(nuevoNombre) {
 //los cuales son dos funciones mas. 
 // Primero Paramentro: Sirve para resolver la promesa de la manera correcta
 // Segundo Parametro: sirve para rechazar la promesa. 
-const getUserAll = new Promise(function (todoBien, todoMal) {
-  //llamar una api
-  setTimeout(function () {
-    //Luego de 5 segundos
-    todoBien('Se acabo el tiempo. :(');
-  }, 5000)
-})
-const getUser = new Promise(function (todoBien, todoMal) {
-  //llamar una api
-  setTimeout(function () {
-    //Luego de 3 segundos
-    todoBien('Se acabo el tiempo. 3');
-  }, 3000)
-})
+// const getUserAll = new Promise(function (todoBien, todoMal) {
+//   //llamar una api
+//   setTimeout(function () {
+//     //Luego de 5 segundos
+//     todoBien('Se acabo el tiempo. :(');
+//   }, 5000)
+// })
+// const getUser = new Promise(function (todoBien, todoMal) {
+//   //llamar una api
+//   setTimeout(function () {
+//     //Luego de 3 segundos
+//     todoBien('Se acabo el tiempo. 3');
+//   }, 3000)
+// })
 // getUser
 //   .then(function () { 
 //     console.log('Todo esta bien en la vida')
@@ -46,28 +46,28 @@ const getUser = new Promise(function (todoBien, todoMal) {
 // .catch(function(message){
 //   console.log(message)
 // })
-Promise.race([//se entra al then de la promesa que se realiza primero
-  getUser,
-  getUserAll
-])
-  .then(function (message) {
-    console.log(message);
-  })
-  .catch(function (message) {
-    console.log(message)
-  });
+// Promise.race([//se entra al then de la promesa que se realiza primero
+//   getUser,
+//   getUserAll
+// ])
+//   .then(function (message) {
+//     console.log(message);
+//   })
+//   .catch(function (message) {
+//     console.log(message)
+//   });
 
 //API con jQuery
-$.ajax('https://randomuser.me/api/', {
-  method: 'GET',//obtener datos,
-  //post mandar datos
-  success: function (data) {
-    console.log(data)
-  },
-  error: function (error) {
-    console.log(error)
-  }
-});
+// $.ajax('https://randomuser.me/api/', {
+//   method: 'GET',//obtener datos,
+//   //post mandar datos
+//   success: function (data) {
+//     console.log(data)
+//   },
+//   error: function (error) {
+//     console.log(error)
+//   }
+// });
 //la funcion anterior es esto:
 //XMLHttpRequest: Que es una cosa que pide datos de un servicio externo
 
@@ -75,17 +75,17 @@ $.ajax('https://randomuser.me/api/', {
 //pueden mandar configuraciones.
 //Fetch devuelve una promesa, Entonces tiene un metodo Then y catch.
 //Manera muchisimo mas corta de sacar el response y con javaScript nuevo.
-fetch('https://randomuser.me/api/')
-  .then(function (response) {
-    // console.log(response)
-    return response.json()
-  })//en caso de las promesas, ellas no son anidadas sino encadenadas
-  .then(function (user) {
-    console.log('user', user.results[0].name.first)
-  })
-  .catch(function () {
-    console.log('algo fallo')
-  });
+// fetch('https://randomuser.me/api/')
+//   .then(function (response) {
+//     // console.log(response)
+//     return response.json()
+//   })//en caso de las promesas, ellas no son anidadas sino encadenadas
+//   .then(function (user) {
+//     console.log('user', user.results[0].name.first)
+//   })
+//   .catch(function () {
+//     console.log('algo fallo')
+//   });
 
 //Funciones Asincronas
 (async function load() {
@@ -102,15 +102,18 @@ fetch('https://randomuser.me/api/')
   }
 
   //eventos
+  const $home = document.getElementById('home');
   const $form = document.getElementById('form');
+
   $form.addEventListener('submit', (event) => {
     event.preventDefault(); //asi evito la recarga, debido a que si recargo la pagina toca esperar de nuevo las solicitudes de informacion.
+    $home.classList.add('search-active');
   })
 
   const actionList = await getData('https://yts.am/api/v2/list_movies.json?genre=action')
   const dramaList = await getData('https://yts.am/api/v2/list_movies.json?genre=drama')
   const animationList = await getData('https://yts.am/api/v2/list_movies.json?genre=animation')
-  console.log(actionList, dramaList, animationList)
+  // console.log(actionList, dramaList, animationList)
   // let terrorList ;
   // .then(function(data){
   //   terrorList = data;
@@ -146,10 +149,8 @@ fetch('https://randomuser.me/api/')
   const $modalTitle = $modal.querySelector('h1');
   const $modalDescription = $modal.querySelector('p');
 
-  const $featuringContainer = document.getElementById('#featuring');
+  const $featuringContainer = document.getElementById('featuring');
   
-  const $home = document.getElementById('#home');
-
   //templates con ECS6 : Literals ` aqui van los literals `
   //${} => Variables dinamicas.
   function videoItemTemplate(movie) {
@@ -170,12 +171,6 @@ fetch('https://randomuser.me/api/')
     html.body.innerHTML = HTMLString;//al body de ese html le inserto el STRING con forma de HTML
     return html.body.children[0];
   }
-  //Eventos
-  function addEventClick($element) {
-    $element.addEventListener('click', () => {
-      alert('click');
-    })
-  }
 
   //Creacion del DOM
   function renderMovieList(list, $container){
@@ -192,5 +187,22 @@ fetch('https://randomuser.me/api/')
   renderMovieList(dramaList.data.movies, $dramaContainer);
   renderMovieList(animationList.data.movies, $animationContainer);
 
+  //Eventos
+  function addEventClick($element) {
+    $element.addEventListener('click', () => {
+      // alert('click');
+      showModal();
+    })
+  }
 
+  function showModal() {
+    $overlay.classList.add('active');
+    $modal.style.animation = 'modalIn .8s forwards'
+  }
+
+  $hideModal.addEventListener('click', hideModal);
+  function hideModal() {
+    $overlay.classList.remove('active');
+    $modal.style.animation = 'modalOut .8s forwards'
+  }
 })()

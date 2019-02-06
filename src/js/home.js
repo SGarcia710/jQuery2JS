@@ -116,4 +116,31 @@ fetch('https://randomuser.me/api/')
 
   //De esta manera tenemos codigo asincrono que se lee de una manera
   //sincrona. El console log no se mandara, hasta que ambas promesas terminen.
+
+  //Selectores en jQuery
+  // const $home = $('.home .list #item');
+  //Selectores en JS
+  // const $home = document.getElementById('modal');
+  // document.getElementsByClassName('')
+  // document.getElementsByTagName('div')
+  // document.querySelector('.modal') //me devuelve el primer .modal que encuentre(con esta clase)
+  // document.querySelectorAll('.myPlaylist-item') //Me devuelve todos los item que tienen este selector.
+
+  const $modal = document.getElementById('modal');
+  const $overlay = document.getElementById('overlay');
+  const $hideModal = document.getElementById('hide-modal');
+  //camel case: cuando hay dos palabras, la segunda la inicio con mayuscula
+
+  const $actionContainer = document.querySelector('#action');
+  const $dramaContainer = document.querySelector('#drama');
+  const $animationContainer = document.getElementById('#animation');
+
+  // document.querySelector('#modal img');
+  const $modalImage = $modal.querySelector('img');
+  const $modalTitle = $modal.querySelector('h1');
+  const $modalDescription = $modal.querySelector('p');
+
+  const $featuringContainer = document.getElementById('#featuring');
+  const $form = document.getElementById('#form');
+  const $home = document.getElementById('#home')
 })()

@@ -146,7 +146,7 @@
         movies: mvs
       }
     } = await getData(`${BASE_API}list_movies.json?limit=1&query_term=${data.get('name')}`);
-    
+
     const HTMLString = featuringTemplate(mvs[0]);
     $featuringContainer.innerHTML = HTMLString;
   })
@@ -186,15 +186,13 @@
   const $animationContainer = document.getElementById('animation');// Pero el getElementById es preciso, de manera que no se necesita el #
 
   // document.querySelector('#modal img');
-  const $modalImage = $modal.querySelector('img');
-  const $modalTitle = $modal.querySelector('h1');
-  const $modalDescription = $modal.querySelector('p');
+
 
   //templates con ECS6 : Literals ` aqui van los literals `
   //${} => Variables dinamicas.
-  function videoItemTemplate(movie) {
+  function videoItemTemplate(movie, category) {
     return (
-      `<div class="primaryPlaylistItem">
+      /*html*/`<div class="primaryPlaylistItem" data-id="${movie.id}" data-category="${category}">
       <div class="primaryPlaylistItem-image">
         <img src="${movie.medium_cover_image}">
       </div>
@@ -212,36 +210,41 @@
   }
 
   //Creacion del DOM
-  function renderMovieList(list, $container) {
+  function renderMovieList(list, $container, category) {
     $container.children[0].remove(); //elimino el primer elemento html del container.
     list.forEach((movie) => {
-      const HTMLString = videoItemTemplate(movie);//creo el String con el HTML
+      const HTMLString = videoItemTemplate(movie, category);//creo el String con el HTML
       const movieElement = createTemplate(HTMLString); //Lo convierto a formato HTML.
       $container.append(movieElement);//Ya teniendo el string en formato HTML, lo añado a mi container con un selector.
       addEventClick(movieElement);
     })
   }
 
-  renderMovieList(actionList.data.movies, $actionContainer);
-  renderMovieList(dramaList.data.movies, $dramaContainer);
-  renderMovieList(animationList.data.movies, $animationContainer);
+  renderMovieList(actionList.data.movies, $actionContainer, 'action');
+  renderMovieList(dramaList.data.movies, $dramaContainer, 'drama');
+  renderMovieList(animationList.data.movies, $animationContainer, 'animation');
 
-  //Eventos
-  function addEventClick($element) {
-    $element.addEventListener('click', () => {
-      // alert('click');
-      showModal();
-    })
-  }
+  const $modalImage = $modal.querySelector('img');
+  const $modalTitle = $modal.querySelector('h1');
+  const $modalDescription = $modal.querySelector('p');
 
-  function showModal() {
+  function showModal($element) {
     $overlay.classList.add('active');
     $modal.style.animation = 'modalIn .8s forwards'
+    const id = $element.dataset.id;
+    const category = $element.dataset.category;
   }
-
+  //Eventos
   $hideModal.addEventListener('click', hideModal);
   function hideModal() {
     $overlay.classList.remove('active');
     $modal.style.animation = 'modalOut .8s forwards'
+  }
+  //Eventos
+  function addEventClick($element) {
+    $element.addEventListener('click', () => {
+      // alert('click');
+      showModal($element);
+    })
   }
 })()

@@ -161,9 +161,12 @@ fetch('https://randomuser.me/api/')
     )
   }
   // console.log(videoItemTemplate('src/images/holamundo.jpg', 'hola mundo'));
-
+//Creacion del DOM
   actionList.data.movies.forEach((movie)=>{
-    const HTMLString = videoItemTemplate(movie);
-    console.log(HTMLString);
+    const HTMLString = videoItemTemplate(movie);//creo el String con el HTML
+    const html = document.implementation.createHTMLDocument();//Creo un html
+    html.body.innerHTML = HTMLString;//al body de ese html le inserto el STRING con forma de HTML
+    $actionContainer.append(html.body.children[0]);//Ya teniendo el string en formato HTML, lo añado a mi container con un selector.
+    // console.log(HTMLString);
   })
 })()

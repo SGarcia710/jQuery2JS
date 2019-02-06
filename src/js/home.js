@@ -100,7 +100,13 @@ fetch('https://randomuser.me/api/')
     const data = await response.json()//aqui vuelvo json el response.
     return data;
   }
-  // console.log(data);
+
+  //eventos
+  const $form = document.getElementById('form');
+  $form.addEventListener('submit', (event) => {
+    event.preventDefault(); //asi evito la recarga, debido a que si recargo la pagina toca esperar de nuevo las solicitudes de informacion.
+  })
+
   const actionList = await getData('https://yts.am/api/v2/list_movies.json?genre=action')
   const dramaList = await getData('https://yts.am/api/v2/list_movies.json?genre=drama')
   const animationList = await getData('https://yts.am/api/v2/list_movies.json?genre=animation')
@@ -141,7 +147,7 @@ fetch('https://randomuser.me/api/')
   const $modalDescription = $modal.querySelector('p');
 
   const $featuringContainer = document.getElementById('#featuring');
-  const $form = document.getElementById('#form');
+  
   const $home = document.getElementById('#home');
 
   //templates con ECS6 : Literals ` aqui van los literals `
@@ -164,6 +170,12 @@ fetch('https://randomuser.me/api/')
     html.body.innerHTML = HTMLString;//al body de ese html le inserto el STRING con forma de HTML
     return html.body.children[0];
   }
+  //Eventos
+  function addEventClick($element) {
+    $element.addEventListener('click', () => {
+      alert('click');
+    })
+  }
 
   //Creacion del DOM
   function renderMovieList(list, $container){
@@ -172,10 +184,13 @@ fetch('https://randomuser.me/api/')
       const HTMLString = videoItemTemplate(movie);//creo el String con el HTML
       const movieElement = createTemplate(HTMLString); //Lo convierto a formato HTML.
       $container.append(movieElement);//Ya teniendo el string en formato HTML, lo añado a mi container con un selector.
+      addEventClick(movieElement);
     }) 
   }
 
   renderMovieList(actionList.data.movies, $actionContainer);
   renderMovieList(dramaList.data.movies, $dramaContainer);
   renderMovieList(animationList.data.movies, $animationContainer);
+
+
 })()

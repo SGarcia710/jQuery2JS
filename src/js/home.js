@@ -135,6 +135,8 @@ fetch('https://randomuser.me/api/')
   const $dramaContainer = document.querySelector('#drama');
   const $animationContainer = document.getElementById('#animation');
 
+ 
+
   // document.querySelector('#modal img');
   const $modalImage = $modal.querySelector('img');
   const $modalTitle = $modal.querySelector('h1');
@@ -142,5 +144,26 @@ fetch('https://randomuser.me/api/')
 
   const $featuringContainer = document.getElementById('#featuring');
   const $form = document.getElementById('#form');
-  const $home = document.getElementById('#home')
+  const $home = document.getElementById('#home');
+
+  //templates con ECS6 : Literals ` aqui van los literals `
+  //${} => Variables dinamicas.
+  function videoItemTemplate(movie) {
+    return (
+      `<div class="primaryPlaylistItem">
+      <div class="primaryPlaylistItem-image">
+        <img src="${movie.medium_cover_image}">
+      </div>
+      <h4 class="primaryPlaylistItem-title">
+        ${movie.title}
+      </h4>
+      </div>`
+    )
+  }
+  // console.log(videoItemTemplate('src/images/holamundo.jpg', 'hola mundo'));
+
+  actionList.data.movies.forEach((movie)=>{
+    const HTMLString = videoItemTemplate(movie);
+    console.log(HTMLString);
+  })
 })()

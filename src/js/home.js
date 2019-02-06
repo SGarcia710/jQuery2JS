@@ -91,8 +91,8 @@
 (async function load() {
   //Gracias a que la funcion es asincrona, por async, se puede usar
   //await: sirve para esperar las peticiones de nuestra API.
-  
-  async function getData(url){
+
+  async function getData(url) {
     const response = await fetch(url);
     //si yo no hubiera hecho asincrona esta funcion, tendria que usar catch y then.
     //De manera que, gracias a async, si le añado el await a lo que manda peticion al API
@@ -100,19 +100,56 @@
     const data = await response.json()//aqui vuelvo json el response.
     return data;
   }
-
+  const $featuringContainer = document.getElementById('featuring');
   //eventos
   const $home = document.getElementById('home');
   const $form = document.getElementById('form');
 
-  $form.addEventListener('submit', (event) => {
+  //Creacion de elementos y atributos
+  // $loader.setAttribute('nombreAtributo','valor de atributo');
+  function setAttrs($element, attrs) {
+    for (const attr in attrs) {
+      $element.setAttribute(attr, attrs[attr]);
+    }
+  }
+
+  const BASE_API = 'https://yts.am/api/v2/';
+
+  function featuringTemplate(mv) {
+    return (
+      ` <div class="featuring">
+      <div class="featuring-image">
+        <img src="${mv.medium_cover_image}" width="70" height="100" alt="">
+      </div>
+      <div class="featuring-content">
+        <p class="featuring-title">Pelicula encontrada</p>
+        <p class="featuring-album">${mv.title}</p>
+      </div>
+    </div>`
+    )
+  }
+
+  $form.addEventListener('submit', async (event) => {
     event.preventDefault(); //asi evito la recarga, debido a que si recargo la pagina toca esperar de nuevo las solicitudes de informacion.
     $home.classList.add('search-active');
+    const $loader = document.createElement('img');//esto crea especificamente un elemento solito.
+    setAttrs($loader, {
+      src: 'src/images/loader.gif',
+      height: 50,
+      width: 50
+    });
+    $featuringContainer.append($loader); //a mi container de featuring le añado el elemento HTML loader ya creado y con contenido.
+
+    const data = new FormData($form);
+    const mv = await getData(`${BASE_API}list_movies.json?limit=1&query_term=${data.get('name')}`);
+    
+    const HTMLString = featuringTemplate(mv.data.movies[0]);
+    $featuringContainer.innerHTML = HTMLString;
   })
 
-  const actionList = await getData('https://yts.am/api/v2/list_movies.json?genre=action')
-  const dramaList = await getData('https://yts.am/api/v2/list_movies.json?genre=drama')
-  const animationList = await getData('https://yts.am/api/v2/list_movies.json?genre=animation')
+  const actionList = await getData(`${BASE_API}list_movies.json?genre=action`)
+  const dramaList = await getData(`${BASE_API}list_movies.json?genre=drama`)
+  const animationList = await getData(`${BASE_API}list_movies.json?genre=animation`)
   // console.log(actionList, dramaList, animationList)
   // let terrorList ;
   // .then(function(data){
@@ -149,8 +186,6 @@
   const $modalTitle = $modal.querySelector('h1');
   const $modalDescription = $modal.querySelector('p');
 
-  const $featuringContainer = document.getElementById('featuring');
-  
   //templates con ECS6 : Literals ` aqui van los literals `
   //${} => Variables dinamicas.
   function videoItemTemplate(movie) {
@@ -166,21 +201,21 @@
     )
   }
 
-  function createTemplate(HTMLString){
+  function createTemplate(HTMLString) {
     const html = document.implementation.createHTMLDocument();//Creo un html
     html.body.innerHTML = HTMLString;//al body de ese html le inserto el STRING con forma de HTML
     return html.body.children[0];
   }
 
   //Creacion del DOM
-  function renderMovieList(list, $container){
+  function renderMovieList(list, $container) {
     $container.children[0].remove(); //elimino el primer elemento html del container.
     list.forEach((movie) => {
       const HTMLString = videoItemTemplate(movie);//creo el String con el HTML
       const movieElement = createTemplate(HTMLString); //Lo convierto a formato HTML.
       $container.append(movieElement);//Ya teniendo el string en formato HTML, lo añado a mi container con un selector.
       addEventClick(movieElement);
-    }) 
+    })
   }
 
   renderMovieList(actionList.data.movies, $actionContainer);

@@ -131,11 +131,9 @@ fetch('https://randomuser.me/api/')
   const $hideModal = document.getElementById('hide-modal');
   //camel case: cuando hay dos palabras, la segunda la inicio con mayuscula
 
-  const $actionContainer = document.querySelector('#action');
-  const $dramaContainer = document.querySelector('#drama');
-  const $animationContainer = document.getElementById('#animation');
-
- 
+  const $actionContainer = document.querySelector('#action');//Los query selector buscan exactamente lo que se les mande
+  const $dramaContainer = document.querySelector('#drama');//en estos dos casos, se buscan ids, por eso el #
+  const $animationContainer = document.getElementById('animation');// Pero el getElementById es preciso, de manera que no se necesita el #
 
   // document.querySelector('#modal img');
   const $modalImage = $modal.querySelector('img');
@@ -160,13 +158,24 @@ fetch('https://randomuser.me/api/')
       </div>`
     )
   }
-  // console.log(videoItemTemplate('src/images/holamundo.jpg', 'hola mundo'));
-//Creacion del DOM
-  actionList.data.movies.forEach((movie)=>{
-    const HTMLString = videoItemTemplate(movie);//creo el String con el HTML
+
+  function createTemplate(HTMLString){
     const html = document.implementation.createHTMLDocument();//Creo un html
     html.body.innerHTML = HTMLString;//al body de ese html le inserto el STRING con forma de HTML
-    $actionContainer.append(html.body.children[0]);//Ya teniendo el string en formato HTML, lo añado a mi container con un selector.
-    // console.log(HTMLString);
-  })
+    return html.body.children[0];
+  }
+
+  //Creacion del DOM
+  function renderMovieList(list, $container){
+    $container.children[0].remove(); //elimino el primer elemento html del container.
+    list.forEach((movie) => {
+      const HTMLString = videoItemTemplate(movie);//creo el String con el HTML
+      const movieElement = createTemplate(HTMLString); //Lo convierto a formato HTML.
+      $container.append(movieElement);//Ya teniendo el string en formato HTML, lo añado a mi container con un selector.
+    }) 
+  }
+
+  renderMovieList(actionList.data.movies, $actionContainer);
+  renderMovieList(dramaList.data.movies, $dramaContainer);
+  renderMovieList(animationList.data.movies, $animationContainer);
 })()

@@ -92,13 +92,28 @@ fetch('https://randomuser.me/api/')
   //Gracias a que la funcion es asincrona, por async, se puede usar
   //await: sirve para esperar las peticiones de nuestra API.
   
-  const response = await fetch('https://yts.am/api/v2/list_movies.json?genre=action')
-  //si yo no hubiera hecho asincrona esta funcion, tendria que usar catch y then.
-  //De manera que, gracias a async, si le añado el await a lo que manda peticion al API
-  //consigo la opcion de guardar el response de la promesa de fetch, en una constante.
-  const data = await response.json()//aqui vuelvo json el response.
-  console.log(data);
+  async function getData(url){
+    const response = await fetch(url);
+    //si yo no hubiera hecho asincrona esta funcion, tendria que usar catch y then.
+    //De manera que, gracias a async, si le añado el await a lo que manda peticion al API
+    //consigo la opcion de guardar el response de la promesa de fetch, en una constante.
+    const data = await response.json()//aqui vuelvo json el response.
+    return data;
+  }
+  // console.log(data);
+  const actionList = await getData('https://yts.am/api/v2/list_movies.json?genre=action')
+  const dramaList = await getData('https://yts.am/api/v2/list_movies.json?genre=drama')
+  const animationList = await getData('https://yts.am/api/v2/list_movies.json?genre=animation')
+  console.log(actionList, dramaList, animationList)
+  // let terrorList ;
+  // .then(function(data){
+  //   terrorList = data;
+  //   console.log(terrorList);
+  // })
+  // .catch(function () {
+  //   console.log('algo fallo')
+  // })
+
   //De esta manera tenemos codigo asincrono que se lee de una manera
   //sincrona. El console log no se mandara, hasta que ambas promesas terminen.
-
 })()

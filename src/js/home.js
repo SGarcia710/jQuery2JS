@@ -141,9 +141,13 @@
     $featuringContainer.append($loader); //a mi container de featuring le añado el elemento HTML loader ya creado y con contenido.
 
     const data = new FormData($form);
-    const mv = await getData(`${BASE_API}list_movies.json?limit=1&query_term=${data.get('name')}`);
+    const {//Desestructuracion de objetos
+      data: {
+        movies: mvs
+      }
+    } = await getData(`${BASE_API}list_movies.json?limit=1&query_term=${data.get('name')}`);
     
-    const HTMLString = featuringTemplate(mv.data.movies[0]);
+    const HTMLString = featuringTemplate(mvs[0]);
     $featuringContainer.innerHTML = HTMLString;
   })
 

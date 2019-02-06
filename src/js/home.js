@@ -151,9 +151,7 @@
     $featuringContainer.innerHTML = HTMLString;
   })
 
-  const {data:  {movies: actionList } } = await getData(`${BASE_API}list_movies.json?genre=action`)
-  const {data:  {movies: dramaList } }  = await getData(`${BASE_API}list_movies.json?genre=drama`)
-  const {data:  {movies: animationList } }  = await getData(`${BASE_API}list_movies.json?genre=animation`)
+  
   // console.log(actionList, dramaList, animationList)
   // let terrorList ;
   // .then(function(data){
@@ -181,13 +179,6 @@
   const $hideModal = document.getElementById('hide-modal');
   //camel case: cuando hay dos palabras, la segunda la inicio con mayuscula
 
-  const $actionContainer = document.querySelector('#action');//Los query selector buscan exactamente lo que se les mande
-  const $dramaContainer = document.querySelector('#drama');//en estos dos casos, se buscan ids, por eso el #
-  const $animationContainer = document.getElementById('animation');// Pero el getElementById es preciso, de manera que no se necesita el #
-
-  // document.querySelector('#modal img');
-
-
   //templates con ECS6 : Literals ` aqui van los literals `
   //${} => Variables dinamicas.
   function videoItemTemplate(movie, category) {
@@ -209,6 +200,14 @@
     return html.body.children[0];
   }
 
+  //Eventos
+  function addEventClick($element) {
+    $element.addEventListener('click', () => {
+      // alert('click');
+      showModal($element);
+    })
+  }
+
   //Creacion del DOM
   function renderMovieList(list, $container, category) {
     $container.children[0].remove(); //elimino el primer elemento html del container.
@@ -216,13 +215,27 @@
       const HTMLString = videoItemTemplate(movie, category);//creo el String con el HTML
       const movieElement = createTemplate(HTMLString); //Lo convierto a formato HTML.
       $container.append(movieElement);//Ya teniendo el string en formato HTML, lo añado a mi container con un selector.
+      const image = movieElement.querySelector('img');
+      image.addEventListener('load', (event) => {
+        event.srcElement.classList.add('fadeIn');//event.srcElement seria exactamente lo mismo que ponerle image, hace referencia a quien lanzo el evento.
+      })
       addEventClick(movieElement);
     })
   }
-
+  
+  const {data:  {movies: actionList } } = await getData(`${BASE_API}list_movies.json?genre=action`)
+  const $actionContainer = document.querySelector('#action');//Los query selector buscan exactamente lo que se les mande
   renderMovieList(actionList, $actionContainer, 'action');
+  
+  const {data:  {movies: dramaList } }  = await getData(`${BASE_API}list_movies.json?genre=drama`)
+  const $dramaContainer = document.querySelector('#drama');//en estos dos casos, se buscan ids, por eso el #
   renderMovieList(dramaList, $dramaContainer, 'drama');
+  
+  const {data:  {movies: animationList } }  = await getData(`${BASE_API}list_movies.json?genre=animation`)
+  const $animationContainer = document.getElementById('animation');// Pero el getElementById es preciso, de manera que no se necesita el #
   renderMovieList(animationList, $animationContainer, 'animation');
+
+  // document.querySelector('#modal img');
 
   const $modalImage = $modal.querySelector('img');
   const $modalTitle = $modal.querySelector('h1');
@@ -260,11 +273,5 @@
     $overlay.classList.remove('active');
     $modal.style.animation = 'modalOut .8s forwards'
   }
-  //Eventos
-  function addEventClick($element) {
-    $element.addEventListener('click', () => {
-      // alert('click');
-      showModal($element);
-    })
-  }
+  
 })()

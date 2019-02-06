@@ -241,12 +241,16 @@ body {
 
 
 .fadeIn {
-  animation: 1000ms fadeIn;
+  animation: 200ms fadeIn;
 }
 
 @keyframes fadeIn {
   0% {
     opacity: 0;
+  }
+
+  50% {
+    opacity: .5;
   }
 
   100% {

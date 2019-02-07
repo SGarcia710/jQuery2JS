@@ -263,18 +263,22 @@
   }
 
   const users = await getUsers(10);
+  localStorage.setItem('usersList', JSON.stringify(users));
   const $usersContainer = document.querySelector('#users');
   renderUsersList(users, $usersContainer);
-
+  
   const { data: { movies: actionList } } = await getData(`${BASE_API}list_movies.json?genre=action`)
+  localStorage.setItem('actionList', JSON.stringify(actionList));
   const $actionContainer = document.querySelector('#action');//Los query selector buscan exactamente lo que se les mande
   renderMovieList(actionList, $actionContainer, 'action');
-
+  
   const { data: { movies: dramaList } } = await getData(`${BASE_API}list_movies.json?genre=drama`)
+  localStorage.setItem('dramaList', JSON.stringify(dramaList) );
   const $dramaContainer = document.querySelector('#drama');//en estos dos casos, se buscan ids, por eso el #
   renderMovieList(dramaList, $dramaContainer, 'drama');
-
+  
   const { data: { movies: animationList } } = await getData(`${BASE_API}list_movies.json?genre=animation`)
+  localStorage.setItem('animationList', JSON.stringify(animationList) );
   const $animationContainer = document.getElementById('animation');// Pero el getElementById es preciso, de manera que no se necesita el #
   renderMovieList(animationList, $animationContainer, 'animation');
 

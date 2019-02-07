@@ -262,23 +262,46 @@
     })
   }
 
-  const users = await getUsers(10);
-  localStorage.setItem('usersList', JSON.stringify(users));
+  async function cacheExist(listType){
+    const listName = `${listType}List`; //creo el nombre de la lista a buscar
+    const cacheList = window.localStorage.getItem(listName);//busco ese cache y lo almaceno en cacheList
+    if (cacheList) {
+      return JSON.parse(cacheList);//si cacheList tiene algo, retorno ese cache porque es el que necesito.
+    }//si cache list es null:
+    if (listType == 'users') {
+      const data = await getUsers(10);
+      localStorage.setItem(listName, JSON.stringify(data));
+      return data;
+    }else { 
+      const { data: { movies: data } } = await getData(`${BASE_API}list_movies.json?genre=${listType}`)
+      localStorage.setItem(listName, JSON.stringify(data));
+      return data;
+    }
+
+    
+  }
+
+  // const users = await getUsers(10);
+  const users = await cacheExist('users');
+  // localStorage.setItem('usersList', JSON.stringify(users));
   const $usersContainer = document.querySelector('#users');
   renderUsersList(users, $usersContainer);
   
-  const { data: { movies: actionList } } = await getData(`${BASE_API}list_movies.json?genre=action`)
-  localStorage.setItem('actionList', JSON.stringify(actionList));
+  // const { data: { movies: actionList } } = await getData(`${BASE_API}list_movies.json?genre=action`)
+  const actionList = await cacheExist('action');
+  // localStorage.setItem('actionList', JSON.stringify(actionList));
   const $actionContainer = document.querySelector('#action');//Los query selector buscan exactamente lo que se les mande
   renderMovieList(actionList, $actionContainer, 'action');
   
-  const { data: { movies: dramaList } } = await getData(`${BASE_API}list_movies.json?genre=drama`)
-  localStorage.setItem('dramaList', JSON.stringify(dramaList) );
+  // const { data: { movies: dramaList } } = await getData(`${BASE_API}list_movies.json?genre=drama`)
+  const dramaList = await cacheExist('drama');
+  // localStorage.setItem('dramaList', JSON.stringify(dramaList) );
   const $dramaContainer = document.querySelector('#drama');//en estos dos casos, se buscan ids, por eso el #
   renderMovieList(dramaList, $dramaContainer, 'drama');
   
-  const { data: { movies: animationList } } = await getData(`${BASE_API}list_movies.json?genre=animation`)
-  localStorage.setItem('animationList', JSON.stringify(animationList) );
+  // const { data: { movies: animationList } } = await getData(`${BASE_API}list_movies.json?genre=animation`)
+  const animationList = await cacheExist('animation');
+  // localStorage.setItem('animationList', JSON.stringify(animationList) );
   const $animationContainer = document.getElementById('animation');// Pero el getElementById es preciso, de manera que no se necesita el #
   renderMovieList(animationList, $animationContainer, 'animation');
 

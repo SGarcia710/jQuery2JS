@@ -75,13 +75,16 @@
 //pueden mandar configuraciones.
 //Fetch devuelve una promesa, Entonces tiene un metodo Then y catch.
 //Manera muchisimo mas corta de sacar el response y con javaScript nuevo.
-// fetch('https://randomuser.me/api/')
+// fetch('https://randomuser.me/api/?results=10')
 //   .then(function (response) {
 //     // console.log(response)
 //     return response.json()
 //   })//en caso de las promesas, ellas no son anidadas sino encadenadas
 //   .then(function (user) {
-//     console.log('user', user.results[0].name.first)
+//     // console.log('user', user.results[0].name.first)
+//     // const userData = user.results[0];
+//     // console.log('user', userData.name.first, userData.name.last, userData.picture.large)
+//     console.log('users', user.results)
 //   })
 //   .catch(function () {
 //     console.log('algo fallo')
@@ -91,6 +94,34 @@
 (async function load() {
   //Gracias a que la funcion es asincrona, por async, se puede usar
   //await: sirve para esperar las peticiones de nuestra API.
+
+  async function getUsers(number) {
+    const response = await fetch(`https://randomuser.me/api/?results=${number}`);
+    const data = await response.json();
+    return data.results;
+  }
+
+  function userListTemplate(user) {
+    return (
+      `<li class="playlistFriends-item">
+        <a href="#">
+          <img src="${user.picture.large}" alt="${user.name.first}" />
+          <span>
+           ${user.name.first} ${user.name.last}
+          </span>
+        </a>
+      </li>`
+    )
+  }
+
+  function renderUsersList(usersList, $container) {
+    $container.children[0].remove(); 
+    usersList.forEach((user) => {
+      const HTMLString = userListTemplate(user);
+      const userElement = createTemplate(HTMLString); 
+      $container.append(userElement);
+    })
+  }
 
   async function getData(url) {
     const response = await fetch(url);
@@ -230,6 +261,10 @@
       addEventClick(movieElement);
     })
   }
+
+  const users = await getUsers(10);
+  const $usersContainer = document.querySelector('#users');
+  renderUsersList(users, $usersContainer);
 
   const { data: { movies: actionList } } = await getData(`${BASE_API}list_movies.json?genre=action`)
   const $actionContainer = document.querySelector('#action');//Los query selector buscan exactamente lo que se les mande

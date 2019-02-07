@@ -98,7 +98,10 @@
     //De manera que, gracias a async, si le añado el await a lo que manda peticion al API
     //consigo la opcion de guardar el response de la promesa de fetch, en una constante.
     const data = await response.json()//aqui vuelvo json el response.
-    return data;
+    if (data.data.movie_count > 0) {
+      return data;
+    }
+    throw new Error('No se encontró ningun resultado');
   }
   const $featuringContainer = document.getElementById('featuring');
   //eventos
@@ -141,17 +144,22 @@
     $featuringContainer.append($loader); //a mi container de featuring le añado el elemento HTML loader ya creado y con contenido.
 
     const data = new FormData($form);
-    const {//Desestructuracion de objetos
-      data: {
-        movies: mvs
-      }
-    } = await getData(`${BASE_API}list_movies.json?limit=1&query_term=${data.get('name')}`);
+    try {
+      const {//Desestructuracion de objetos
+        data: {
+          movies: mvs
+        }
+      } = await getData(`${BASE_API}list_movies.json?limit=1&query_term=${data.get('name')}`);
+      const HTMLString = featuringTemplate(mvs[0]);
+      $featuringContainer.innerHTML = HTMLString;
+    } catch (error) {
+      alert(error.message);
+      $loader.remove();
+      $home.classList.remove('search-active');
+    }
 
-    const HTMLString = featuringTemplate(mvs[0]);
-    $featuringContainer.innerHTML = HTMLString;
   })
 
-  
   // console.log(actionList, dramaList, animationList)
   // let terrorList ;
   // .then(function(data){
@@ -222,16 +230,16 @@
       addEventClick(movieElement);
     })
   }
-  
-  const {data:  {movies: actionList } } = await getData(`${BASE_API}list_movies.json?genre=action`)
+
+  const { data: { movies: actionList } } = await getData(`${BASE_API}list_movies.json?genre=action`)
   const $actionContainer = document.querySelector('#action');//Los query selector buscan exactamente lo que se les mande
   renderMovieList(actionList, $actionContainer, 'action');
-  
-  const {data:  {movies: dramaList } }  = await getData(`${BASE_API}list_movies.json?genre=drama`)
+
+  const { data: { movies: dramaList } } = await getData(`${BASE_API}list_movies.json?genre=drama`)
   const $dramaContainer = document.querySelector('#drama');//en estos dos casos, se buscan ids, por eso el #
   renderMovieList(dramaList, $dramaContainer, 'drama');
-  
-  const {data:  {movies: animationList } }  = await getData(`${BASE_API}list_movies.json?genre=animation`)
+
+  const { data: { movies: animationList } } = await getData(`${BASE_API}list_movies.json?genre=animation`)
   const $animationContainer = document.getElementById('animation');// Pero el getElementById es preciso, de manera que no se necesita el #
   renderMovieList(animationList, $animationContainer, 'animation');
 
@@ -241,11 +249,11 @@
   const $modalTitle = $modal.querySelector('h1');
   const $modalDescription = $modal.querySelector('p');
 
-  function findById(list, id){
+  function findById(list, id) {
     return list.find(movie => movie.id === parseInt(id, 10))
   }
 
-  function findMovie(id, category){
+  function findMovie(id, category) {
     switch (category) {
       case 'action':
         return findById(actionList, id)
@@ -273,5 +281,5 @@
     $overlay.classList.remove('active');
     $modal.style.animation = 'modalOut .8s forwards'
   }
-  
+
 })()
